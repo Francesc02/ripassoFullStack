@@ -1,12 +1,18 @@
 package com.example.Ripasso.Controller;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.Ripasso.User;
 import com.example.Ripasso.Service.RipassoService;
 
 @RestController
@@ -27,13 +33,24 @@ public class RipassoController {
 		
 	}
 	@GetMapping("get")
-	public void ricezioneDalFe(@RequestParam String query) {
-		logger.info("sono dentro il controller e ho questa frase -> " + query);
-		this.ripassoService.intermezzoBE(query);
+	public List<Map<String,Object>> ricezioneDalFe() {
+        logger.info("Sono dentro il controller");
+        
+        // Recupera la lista di username dal servizio e la ritorna
+        List<Map<String,Object>> usernames = ripassoService.getUsernames();
+        return usernames;
+    }
+	
+	@PostMapping("insertUser")
+	public  ResponseEntity<String> insertUser(@RequestBody User user) {
 		
-		
-		
+		this.ripassoService.insertUser(user.getUsername(), user.getPassword());
+		logger.info("questi sono i dati: "+ user.getUsername() + " password: " + user.getPassword());
+		return ResponseEntity.ok("User added successfully!");
 	}
+	
+	
+	
 	
 	
 	

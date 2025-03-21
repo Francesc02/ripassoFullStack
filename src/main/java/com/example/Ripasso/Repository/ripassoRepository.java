@@ -1,31 +1,50 @@
 package com.example.Ripasso.Repository;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.Ripasso.Service.RipassoService;
 
 @Repository
-public class RipassoRepository  {
-	
+public class RipassoRepository {
+	private final JdbcTemplate jdbcTemplate;
 	private static final Logger logger = LoggerFactory.getLogger(RipassoService.class);
-	
-	
-	 @Query(value = "SELECT * FROM provaString", nativeQuery = true)
-	public String insertQuery(@Param("query") String query) {
-		 logger.info("ritorno: " + query);
-		 return query;
-		
-		 
-	 }
-	
-	
+
+	@Autowired
+	public RipassoRepository(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
+
+	public List<Map<String, Object>> getUsernames() {
+//    	logger.info("sono dentro il service");
+//        String sql = "SELECT * FROM users"; 
+//        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getString("username")); per ottenere solo un risultato
+		String sql = "SELECT username, password FROM users";
+		List<Map<String, Object>> users = jdbcTemplate.query(sql, (rs, rowNum) -> {
+			Map<String, Object> user = new HashMap<>();
+			user.put("username", rs.getString("username"));
+			user.put("password", rs.getString("password"));
+			return user;
+		});
+
+		return users;
+
+	}
+
+	// Metodo per inserire un nuovo utente
+	public void insertUser(String username, String password) {
+		// Query SQL per inserire un nuovo utente
+		String sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+
+		// Esegui l'inserimento nel database con i parametri forniti
+		jdbcTemplate.update(sql, username, password);
+	}
 
 }
