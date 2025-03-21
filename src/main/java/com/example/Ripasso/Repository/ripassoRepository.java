@@ -22,7 +22,7 @@ public class RipassoRepository {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	public List<Map<String, Object>> getUsernames() {
+	public List<Map<String, Object>> getUsers() {
 //    	logger.info("sono dentro il service");
 //        String sql = "SELECT * FROM users"; 
 //        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getString("username")); per ottenere solo un risultato

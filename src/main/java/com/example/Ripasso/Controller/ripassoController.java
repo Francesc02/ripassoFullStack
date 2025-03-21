@@ -37,16 +37,23 @@ public class RipassoController {
         logger.info("Sono dentro il controller");
         
         // Recupera la lista di username dal servizio e la ritorna
-        List<Map<String,Object>> usernames = ripassoService.getUsernames();
+        List<Map<String,Object>> usernames = ripassoService.getUsers();
         return usernames;
     }
 	
 	@PostMapping("insertUser")
-	public  ResponseEntity<String> insertUser(@RequestBody User user) {
+	public  String insertUser(@RequestBody User user) {
 		
 		this.ripassoService.insertUser(user.getUsername(), user.getPassword());
 		logger.info("questi sono i dati: "+ user.getUsername() + " password: " + user.getPassword());
-		return ResponseEntity.ok("User added successfully!");
+		return "User added successfully!";
+	}
+	
+	@PostMapping("login")
+	public boolean Login(@RequestBody User user) {
+	boolean risposta=this.ripassoService.matchUserLogin(user.getUsername(),user.getPassword());
+	return risposta;
+	
 	}
 	
 	
